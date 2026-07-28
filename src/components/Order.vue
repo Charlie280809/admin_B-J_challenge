@@ -1,7 +1,7 @@
 <script setup>
 import Trash from '@primeicons/vue/trash';
 
-const emit = defineEmits(['delete', 'status'])
+const emit = defineEmits(['delete', 'status', 'select'])
 
 defineProps({
 	name: String,
@@ -11,11 +11,11 @@ defineProps({
 </script>
 
 <template>
-	<article class="order-card">
+	<article class="order-card" role="button" tabindex="0" @click="emit('select')" @keydown.enter="emit('select')" @keydown.space.prevent="emit('select')">
 		<div class="order_name">
 			<h3>{{ name }}</h3>
 
-			<button class="trash_icon" type="button" aria-label="Verwijder bestelling" @click="emit('delete')">
+			<button class="trash_icon" type="button" aria-label="Verwijder bestelling" @click.stop="emit('delete')">
 				<Trash />
 			</button>
 		</div>
@@ -23,7 +23,7 @@ defineProps({
 		<div class="order_timestamp">
 			<p>{{ date }}</p>
 
-			<button class="order_status" type="button" @click="emit('status')">
+			<button class="order_status" type="button" @click.stop="emit('status')">
 				{{ status }}
 			</button>
 		</div>
@@ -44,6 +44,12 @@ defineProps({
 	background: #f3f4f6;
 	border-radius: 18px;
 	border: 1px solid rgba(13, 30, 41, 0.08);
+	cursor: pointer;
+}
+
+.order-card:focus-visible {
+	outline: 3px solid rgba(247, 168, 0, 0.8);
+	outline-offset: 3px;
 }
 
 .order_name,
