@@ -12,18 +12,18 @@ defineProps({
 
 <template>
 	<article class="order-card">
-		<div class="order-card__header">
+		<div class="order_name">
 			<h3>{{ name }}</h3>
 
-			<button class="order-card__icon-button" type="button" aria-label="Verwijder bestelling" @click="emit('delete')">
+			<button class="trash_icon" type="button" aria-label="Verwijder bestelling" @click="emit('delete')">
 				<Trash />
 			</button>
 		</div>
 
-		<div class="order-card__footer">
+		<div class="order_timestamp">
 			<p>{{ date }}</p>
 
-			<button class="order-card__status" type="button" @click="emit('status')">
+			<button class="order_status" type="button" @click="emit('status')">
 				{{ status }}
 			</button>
 		</div>
@@ -31,7 +31,7 @@ defineProps({
 </template>
 
 <style scoped>
-*{
+* {
 	box-sizing: border-box;
 }
 
@@ -46,8 +46,8 @@ defineProps({
 	border: 1px solid rgba(13, 30, 41, 0.08);
 }
 
-.order-card__header,
-.order-card__footer {
+.order_name,
+.order_timestamp {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -72,7 +72,7 @@ defineProps({
 	text-align: left;
 }
 
-.order-card__icon-button {
+.trash_icon {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -86,7 +86,7 @@ defineProps({
 	flex: 0 0 auto;
 }
 
-.order-card__icon-button svg {
+.trash_icon svg {
 	width: 30px;
 	height: 30px;
 	fill: none;
@@ -94,21 +94,22 @@ defineProps({
 	stroke-width: 0.2;
 }
 
-.order-card__status {
+.order_status {
 	min-width: fit-content;
-	padding: 13px 24px;
+	padding: 6px 12px;
 	border-radius: 8px;
 	border: 2px solid #F7A800;
 	background: rgba(247, 168, 0, 0.5);
-	color: #121212;
+	color: var(--black);
+	font-family: 'Proxima Nova', sans-serif;
 	font-size: 1.1rem;
 	line-height: 1;
 	cursor: pointer;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
 }
 
-.order-card__status:hover,
-.order-card__icon-button:hover {
-	opacity: 0.92;
+.order_status:hover,
+.trash_icon:hover {
+	opacity: 0.6;
+	transition: all 0.2s ease-in-out;
 }
 </style>
