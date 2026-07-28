@@ -17,6 +17,14 @@ export function getOrders(token) {
     })
 }
 
+export function getOrderById(orderId, token) {
+    return axios.get(`${API_URL}/api/orders/${orderId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
 export function deleteOrder(orderId, token) {
     return axios.delete(`${API_URL}/api/orders/${orderId}`, {
         headers: {
