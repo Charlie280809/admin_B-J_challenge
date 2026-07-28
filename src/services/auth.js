@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        token: localStorage.getItem('user') || null,
+        token: localStorage.getItem('token') || null,
         user: JSON.parse(localStorage.getItem('user')) || null
     }),
     actions:{
@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
                 this.user = res.data.user;
 
                 localStorage.setItem('token', this.token);
-                localStorage.setItem('user', JSON.stringify(res.data));
+                localStorage.setItem('user', JSON.stringify(this.user));
 
                 window.location.href = '/dashboard';
             } catch (error) {
