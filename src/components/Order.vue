@@ -1,4 +1,6 @@
 <script setup>
+import Trash from '@primeicons/vue/trash';
+
 defineProps({
 	name: String,
 	date: String,
@@ -12,13 +14,7 @@ defineProps({
 			<h3>{{ name }}</h3>
 
 			<button class="order-card__icon-button" type="button" data-action="delete" aria-label="Verwijder bestelling">
-				<svg viewBox="0 0 24 24" aria-hidden="true">
-					<path d="M3 6h18" />
-					<path d="M8 6V4h8v2" />
-					<path d="M6 6l1 14h10l1-14" />
-					<path d="M10 10v6" />
-					<path d="M14 10v6" />
-				</svg>
+				<Trash />
 			</button>
 		</div>
 
@@ -91,9 +87,7 @@ defineProps({
 	height: 30px;
 	fill: none;
 	stroke: currentColor;
-	stroke-width: 1.8;
-	stroke-linecap: round;
-	stroke-linejoin: round;
+	stroke-width: 0.2;
 }
 
 .order-card__status {
