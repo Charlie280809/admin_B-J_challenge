@@ -5,6 +5,10 @@ import { deleteOrder, getOrders, updateOrderStatus } from '../services/api.js'
 import Order from '../components/Order.vue'
 import logo from "../assets/Ben_&_Jerry's.svg.webp"
 
+import CheckCircle from '@primeicons/vue/check-circle';
+import SpinnerDotted from '@primeicons/vue/spinner-dotted';
+import TimesCircle from '@primeicons/vue/times-circle';
+
 const auth = useAuthStore()
 const orders = ref([])
 
@@ -87,15 +91,16 @@ onMounted(loadOrders)
             <img :src="logo" alt="Ben & Jerry's logo">
 
             <button type="button">Alle bestellingen</button>
-            <button type="button">Verzonden</button>
-            <button type="button">Te verwerken</button>
-            <button type="button">Geannuleerd</button>
+            <button type="button"> <CheckCircle /> Verzonden</button>
+            <button type="button"> <SpinnerDotted /> Te verwerken</button>
+            <button type="button"> <TimesCircle /> Geannuleerd</button>
+
+            <button @click="auth.logout" type="button">Uitloggen</button>
         </aside>
 
         <main class="mainContent">
             <header class="mainContent__header">
-                <h2>Hallo admin!</h2>
-                <p>Welkom op het dashboard.</p>
+                <h2>Bestellingen:</h2>
             </header>
 
             <div class="order-list">
@@ -139,7 +144,7 @@ onMounted(loadOrders)
     border: 0;
     border-radius: 12px;
     background: #ffffff;
-    color: #101828;
+    color: #231F20;
     font-family: 'Proxima Nova', sans-serif;
     font-size: 1rem;
     font-weight: 600;
@@ -159,7 +164,7 @@ onMounted(loadOrders)
 .mainContent__header h2 {
     margin: 0 0 6px;
     font-size: 2rem;
-    color: #f8fafc;
+    color: #231F20;
 }
 
 .mainContent__header p {
