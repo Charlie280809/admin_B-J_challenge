@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', {
     actions:{
         async login(email, password){
             try {
-                const res = await axios.post('https://api-b-j-challenge.onrender.com/api/v1/user/auth', {
+                const res = await axios.post('https://api-b-j-challenge.onrender.com/api/login', {
                     email,
                     password
                 })
