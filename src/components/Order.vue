@@ -1,6 +1,8 @@
 <script setup>
 import Trash from '@primeicons/vue/trash';
 
+const emit = defineEmits(['delete', 'status'])
+
 defineProps({
 	name: String,
 	date: String,
@@ -13,7 +15,7 @@ defineProps({
 		<div class="order-card__header">
 			<h3>{{ name }}</h3>
 
-			<button class="order-card__icon-button" type="button" data-action="delete" aria-label="Verwijder bestelling">
+			<button class="order-card__icon-button" type="button" aria-label="Verwijder bestelling" @click="emit('delete')">
 				<Trash />
 			</button>
 		</div>
@@ -21,7 +23,7 @@ defineProps({
 		<div class="order-card__footer">
 			<p>{{ date }}</p>
 
-			<button class="order-card__status" type="button" data-action="status">
+			<button class="order-card__status" type="button" @click="emit('status')">
 				{{ status }}
 			</button>
 		</div>

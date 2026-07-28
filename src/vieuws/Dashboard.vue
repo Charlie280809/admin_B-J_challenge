@@ -55,11 +55,7 @@ const nextStatus = (status) => {
     return 'Te verwerken'
 }
 
-const handleCardClick = async (event, order) => {
-    const action = event.target.closest('button')?.dataset.action
-
-    if (!action) return
-
+const handleDelete = async (order) => {
     const token = getToken()
     const orderId = order.id
 
@@ -68,12 +64,22 @@ const handleCardClick = async (event, order) => {
     }
 
     try {
-        if (action === 'delete') {
-            await deleteOrder(orderId, token)
-            orders.value = orders.value.filter((item) => item.id !== orderId)
-            return
-        }
+        await deleteOrder(orderId, token)
+        orders.value = orders.value.filter((item) => item.id !== orderId)
+    } catch (err) {
+        console.error('Failed to delete order:', err)
+    }
+}
 
+const handleStatus = async (order) => {
+    const token = getToken()
+    const orderId = order.id
+
+    if (!token || !orderId) {
+        return
+    }
+
+    try {
         const status = nextStatus(order.status)
         await updateOrderStatus(orderId, status, token)
         order.status = status
@@ -114,7 +120,7 @@ onMounted(loadOrders)
                 <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
 
                 <Order v-for="order in orders" :key="order.id" :name="order.name" :date="order.date"
-                    :status="order.status" @click="handleCardClick($event, order)" />
+                    :status="order.status" @delete="handleDelete(order)" @status="handleStatus(order)" />
             </div>
         </main>
     </div>
