@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '../services/auth.js'
 import { deleteOrder, getOrders, updateOrderStatus } from '../services/api.js'
 import Order from '../components/Order.vue'
@@ -10,6 +11,7 @@ import SpinnerDotted from '@primeicons/vue/spinner-dotted';
 import TimesCircle from '@primeicons/vue/times-circle';
 
 const auth = useAuthStore()
+const router = useRouter()
 const orders = ref([])
 
 const getToken = () => auth.token || localStorage.getItem('token')
@@ -88,6 +90,14 @@ const handleStatus = async (order) => {
     }
 }
 
+const handleOpen = (order) => {
+    if (!order?.id) {
+        return
+    }
+
+    router.push({ name: 'detail', params: { id: order.id } })
+}
+
 onMounted(loadOrders)
 </script>
 
@@ -120,7 +130,7 @@ onMounted(loadOrders)
                 <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
 
                 <Order v-for="order in orders" :key="order.id" :name="order.name" :date="order.date"
-                    :status="order.status" @delete="handleDelete(order)" @status="handleStatus(order)" />
+                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)" @status="handleStatus(order)" />
             </div>
         </main>
     </div>
