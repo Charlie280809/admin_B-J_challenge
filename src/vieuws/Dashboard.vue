@@ -111,7 +111,7 @@ onMounted(loadOrders)
         </aside>
 
         <main class="mainContent">
-            <header class="mainContent__header">
+            <header class="mainContent_top">
                 <h2>Dashboard</h2>
                 <p>{{ orders.length }} bestellingen:</p>
             </header>
@@ -207,14 +207,14 @@ body {
     gap: 22px;
 }
 
-.mainContent__header h2 {
+.mainContent_top h2 {
     margin: 0 0 20px;
     font-family: 'ChunkFive', sans-serif;
     font-size: 2.3rem;
     color: #231F20;
 }
 
-.mainContent__header p {
+.mainContent_top p {
     margin: 0;
     font-size: 1.1rem;
     color: #6B7280;
