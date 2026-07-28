@@ -29,18 +29,19 @@ defineProps({
 </template>
 
 <style scoped>
+*{
+	box-sizing: border-box;
+}
+
 .order-card {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	gap: 24px;
 	padding: 26px 28px;
-	background: #cfe3ef;
+	background: #f3f4f6;
 	border-radius: 18px;
 	border: 1px solid rgba(13, 30, 41, 0.08);
-	box-shadow: 0 12px 24px rgba(12, 20, 28, 0.12);
-	min-height: 178px;
-	box-sizing: border-box;
 }
 
 .order-card__header,
@@ -53,7 +54,8 @@ defineProps({
 
 .order-card h3 {
 	margin: 0;
-	font-size: 2rem;
+	font-family: 'Proxima Nova', sans-serif;
+	font-size: 1.2rem;
 	line-height: 1.1;
 	font-weight: 700;
 	letter-spacing: -0.03em;
@@ -91,13 +93,13 @@ defineProps({
 }
 
 .order-card__status {
-	min-width: 230px;
+	min-width: fit-content;
 	padding: 13px 24px;
 	border-radius: 8px;
-	border: 2px solid #d8a51a;
-	background: #e8d09a;
+	border: 2px solid #F7A800;
+	background: rgba(247, 168, 0, 0.5);
 	color: #121212;
-	font-size: 1.4rem;
+	font-size: 1.1rem;
 	line-height: 1;
 	cursor: pointer;
 	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
@@ -106,32 +108,5 @@ defineProps({
 .order-card__status:hover,
 .order-card__icon-button:hover {
 	opacity: 0.92;
-}
-
-@media (max-width: 720px) {
-	.order-card {
-		padding: 20px;
-		gap: 20px;
-		min-height: auto;
-	}
-
-	.order-card__header,
-	.order-card__footer {
-		align-items: flex-start;
-		flex-direction: column;
-	}
-
-	.order-card__status {
-		min-width: 100%;
-	}
-
-	.order-card h3 {
-		font-size: 1.5rem;
-	}
-
-	.order-card p,
-	.order-card__status {
-		font-size: 1rem;
-	}
 }
 </style>

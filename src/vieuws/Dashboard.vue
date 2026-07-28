@@ -91,16 +91,23 @@ onMounted(loadOrders)
             <img :src="logo" alt="Ben & Jerry's logo">
 
             <button type="button">Alle bestellingen</button>
-            <button type="button"> <CheckCircle /> Verzonden</button>
-            <button type="button"> <SpinnerDotted /> Te verwerken</button>
-            <button type="button"> <TimesCircle /> Geannuleerd</button>
+            <button type="button">
+                <CheckCircle /> Verzonden
+            </button>
+            <button type="button">
+                <SpinnerDotted /> Te verwerken
+            </button>
+            <button type="button">
+                <TimesCircle /> Geannuleerd
+            </button>
 
-            <button @click="auth.logout" type="button">Uitloggen</button>
+            <button class="logoutBtn" @click="auth.logout" type="button">Uitloggen</button>
         </aside>
 
         <main class="mainContent">
             <header class="mainContent__header">
-                <h2>Bestellingen:</h2>
+                <h2>Dashboard</h2>
+                <p>{{ orders.length }} bestellingen:</p>
             </header>
 
             <div class="order-list">
@@ -114,22 +121,34 @@ onMounted(loadOrders)
 </template>
 
 <style scoped>
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Proxima Nova', sans-serif;
+}
 
 .dashboard-shell {
     min-height: 100vh;
     display: grid;
     grid-template-columns: minmax(240px, 280px) 1fr;
+    margin: 0;
+    padding: 0;
     /* background: white; */
 }
 
 .sideNav {
+    height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 18px;
     padding: 24px;
-    background: #f3f4f6;
-    box-sizing: border-box;
+    background: #cfe3ef;
+    position: sticky;
+    top: 0;
 }
 
 .sideNav img {
@@ -140,6 +159,9 @@ onMounted(loadOrders)
 }
 
 .sideNav button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 14px 18px;
     border: 0;
     border-radius: 12px;
@@ -153,8 +175,26 @@ onMounted(loadOrders)
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
 }
 
+.sideNav button:hover {
+    background: #f5f7fc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+}
+
+.sideNav button:active {
+    background: #e0e7ff;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+    transform: translateY(0);
+    transition: all 0.1s ease-in-out;
+}
+
+.logoutBtn {
+    margin-top: auto;
+}
+
 .mainContent {
-    padding: 32px;
+    padding: 32px 24px 32px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -162,14 +202,16 @@ onMounted(loadOrders)
 }
 
 .mainContent__header h2 {
-    margin: 0 0 6px;
-    font-size: 2rem;
+    margin: 0 0 20px;
+    font-family: 'ChunkFive', sans-serif;
+    font-size: 2.3rem;
     color: #231F20;
 }
 
 .mainContent__header p {
     margin: 0;
-    color: #cbd5e1;
+    font-size: 1.1rem;
+    color: #6B7280;
 }
 
 .order-list {
@@ -189,20 +231,5 @@ onMounted(loadOrders)
 .state-message--error {
     background: rgba(185, 28, 28, 0.18);
     color: #fecaca;
-}
-
-@media (max-width: 960px) {
-    .dashboard-shell {
-        grid-template-columns: 1fr;
-    }
-
-    .sideNav {
-        order: 2;
-    }
-
-    .mainContent {
-        order: 1;
-        padding: 20px;
-    }
 }
 </style>
