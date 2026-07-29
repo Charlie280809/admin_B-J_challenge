@@ -23,8 +23,11 @@
   --black: #231F20;
   --blue: #40B4E5;
   --lightblue: #C4E7F3;
+  --darkblue: #002F87;
   --green: #41873F;
   --lightgreen: #82BC00;
+  --red: #E2231A;
+  --darkred: #D13239;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -33,4 +36,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

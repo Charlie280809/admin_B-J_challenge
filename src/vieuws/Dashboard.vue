@@ -6,9 +6,11 @@ import { deleteOrder, getOrders, updateOrderStatus } from '../services/api.js'
 import Order from '../components/Order.vue'
 import logo from "../assets/Ben_&_Jerry's.svg.webp"
 
+import List from '@primeicons/vue/list';
 import CheckCircle from '@primeicons/vue/check-circle';
 import SpinnerDotted from '@primeicons/vue/spinner-dotted';
 import TimesCircle from '@primeicons/vue/times-circle';
+import SignOut from '@primeicons/vue/sign-out';
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -100,7 +102,10 @@ onMounted(loadOrders)
         <aside class="sideNav">
             <img :src="logo" alt="Ben & Jerry's logo">
 
-            <button type="button">Alle bestellingen</button>
+            <button type="button">
+                <List /> Alle bestellingen
+            </button>
+
             <button type="button">
                 <CheckCircle /> Verzonden
             </button>
@@ -111,7 +116,7 @@ onMounted(loadOrders)
                 <TimesCircle /> Geannuleerd
             </button>
 
-            <button class="logoutBtn" @click="auth.logout" type="button">Uitloggen</button>
+            <button class="logoutBtn" @click="auth.logout" type="button"> <SignOut/> Uitloggen</button>
         </aside>
 
         <main class="mainContent">
@@ -124,30 +129,21 @@ onMounted(loadOrders)
                 <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
 
                 <Order v-for="order in orders" :key="order.id" :name="order.name" :date="order.date"
-                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)" @status="handleStatus(order, $event)" />
+                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)"
+                    @status="handleStatus(order, $event)" />
             </div>
         </main>
     </div>
 </template>
 
 <style scoped>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Proxima Nova', sans-serif;
-}
-
 .dashboard-shell {
     min-height: 100vh;
     display: grid;
     grid-template-columns: minmax(240px, 280px) 1fr;
     margin: 0;
     padding: 0;
-    /* background: white; */
+    font-family: 'Proxima Nova', sans-serif;
 }
 
 .sideNav {
@@ -175,7 +171,7 @@ body {
     padding: 14px 18px;
     border: 0;
     border-radius: 12px;
-    background: #ffffff;
+    background: white;
     color: #231F20;
     font-family: 'Proxima Nova', sans-serif;
     font-size: 1rem;
@@ -193,14 +189,19 @@ body {
 }
 
 .sideNav button:active {
-    background: #e0e7ff;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+    background: white;
+    border: 2px solid var(--darkblue);
     transform: translateY(0);
     transition: all 0.1s ease-in-out;
 }
 
-.logoutBtn {
+.sideNav .logoutBtn {
     margin-top: auto;
+    background-color: rgba(0, 47, 135, 0.2);
+}
+
+.sideNav .logoutBtn:hover {
+    background-color: rgba(0, 47, 135, 0.4);
 }
 
 .mainContent {
