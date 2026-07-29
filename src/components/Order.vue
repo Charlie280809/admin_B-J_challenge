@@ -13,17 +13,10 @@ defineProps({
 </script>
 
 <template>
-	<article class="order-card" role="button" tabindex="0" @click="emit('select')" @keydown.enter="emit('select')" @keydown.space.prevent="emit('select')">
+	<article class="order-card" role="button" tabindex="0" @click="emit('select')" @keydown.enter="emit('select')"
+		@keydown.space.prevent="emit('select')">
 		<div class="order_name">
 			<h3>{{ name }}</h3>
-
-			<button class="trash_icon" type="button" aria-label="Verwijder bestelling" @click.stop="emit('delete')">
-				<Trash />
-			</button>
-		</div>
-
-		<div class="order_timestamp">
-			<p>{{ date }}</p>
 
 			<select class="order_status" :value="status" @click.stop @change="emit('status', $event.target.value)">
 				<option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
@@ -31,21 +24,29 @@ defineProps({
 				</option>
 			</select>
 		</div>
+
+		<div class="order_timestamp">
+			<p>{{ date }}</p>
+
+			<button class="trashBtn" type="button" aria-label="Verwijder bestelling" @click.stop="emit('delete')">
+				<span>
+					<Trash />
+				</span>
+				Verwijder bestelling
+			</button>
+		</div>
 	</article>
 </template>
 
 <style scoped>
-* {
-	box-sizing: border-box;
-}
-
 .order-card {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 24px;
-	padding: 26px 28px;
+	gap: 16px;
+	padding: 20px 24px;
 	background: #f3f4f6;
+	color: var(--black);
 	border-radius: 18px;
 	border: 1px solid rgba(13, 30, 41, 0.08);
 	cursor: pointer;
@@ -67,41 +68,50 @@ defineProps({
 .order-card h3 {
 	margin: 0;
 	font-family: 'Proxima Nova', sans-serif;
-	font-size: 1.2rem;
+	font-size: 1.25rem;
 	line-height: 1.1;
 	font-weight: 700;
-	letter-spacing: -0.03em;
-	color: #09121a;
+	letter-spacing: -0.01em;
 	text-align: left;
 }
 
 .order-card p {
 	margin: 0;
 	font-size: 1.15rem;
-	color: #09121a;
 	text-align: left;
 }
 
-.trash_icon {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 38px;
-	height: 38px;
-	padding: 0;
-	border: 0;
-	background: transparent;
-	color: #09121a;
-	cursor: pointer;
-	flex: 0 0 auto;
+.order_timestamp p {
+	font-size: 1rem;
 }
 
-.trash_icon svg {
-	width: 30px;
-	height: 30px;
-	fill: none;
-	stroke: currentColor;
-	stroke-width: 0.2;
+.trashBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 12px;
+	border: 2px solid #DF9B95;
+	border-radius: 8px;
+	color: #09121a;
+	font-family: 'Proxima Nova', sans-serif;
+	font-size: 1rem;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.trashBtn:hover {
+	color: var(--red);
+	border: 2px solid var(--red);
+	background-color: #F0CFCC;
+	transition: all 0.2s ease-in-out;
+}
+
+.trashBtn span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--red);
 }
 
 .order_status {
@@ -117,8 +127,7 @@ defineProps({
 	cursor: pointer;
 }
 
-.order_status:hover,
-.trash_icon:hover {
+.order_status:hover {
 	opacity: 0.6;
 	transition: all 0.2s ease-in-out;
 }
