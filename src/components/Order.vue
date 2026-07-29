@@ -1,6 +1,8 @@
 <script setup>
 import Trash from '@primeicons/vue/trash';
 
+const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
+
 const emit = defineEmits(['delete', 'status', 'select'])
 
 defineProps({
@@ -23,9 +25,11 @@ defineProps({
 		<div class="order_timestamp">
 			<p>{{ date }}</p>
 
-			<button class="order_status" type="button" @click.stop="emit('status')">
-				{{ status }}
-			</button>
+			<select class="order_status" :value="status" @click.stop @change="emit('status', $event.target.value)">
+				<option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
+					{{ statusOption }}
+				</option>
+			</select>
 		</div>
 	</article>
 </template>

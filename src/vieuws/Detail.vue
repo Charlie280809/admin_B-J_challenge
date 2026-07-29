@@ -2,11 +2,12 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../services/auth.js'
-import { getOrderById, getOrders } from '../services/api.js'
+import { getOrderById, getOrders, updateOrderStatus } from '../services/api.js'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const order = ref(null)
 const loading = ref(true)
@@ -118,6 +119,26 @@ const goBack = () => {
 
 const formatPrice = (value) => `€ ${value}`
 
+const handleStatusChange = async (event) => {
+    const token = getToken()
+    const id = order.value?.id
+    const status = event.target.value
+
+    if (!token || !id || !order.value || !status) {
+        return
+    }
+
+    try {
+        await updateOrderStatus(id, status, token)
+        order.value = {
+            ...order.value,
+            status,
+        }
+    } catch (err) {
+        console.error('Failed to update order status:', err)
+    }
+}
+
 onMounted(resolveOrder)
 
 watch(orderId, resolveOrder)
@@ -169,7 +190,11 @@ watch(orderId, resolveOrder)
 
                 <div>
                     <p class="detail-label">Status</p>
-                    <p class="detail-status">{{ order.status }}</p>
+                    <select class="detail-status" :value="order.status" @change="handleStatusChange">
+                        <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
+                            {{ statusOption }}
+                        </option>
+                    </select>
                 </div>
             </section>
         </div>
@@ -243,9 +268,19 @@ watch(orderId, resolveOrder)
 
 .detail-status {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 8px 14px;
     border-radius: 999px;
+    border: 0;
     background: rgba(247, 168, 0, 0.18);
+    color: #09121a;
     font-weight: 700;
+    cursor: pointer;
+}
+
+.detail-status:focus-visible {
+    outline: 3px solid rgba(247, 168, 0, 0.8);
+    outline-offset: 2px;
 }
 </style>

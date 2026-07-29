@@ -13,6 +13,7 @@ import TimesCircle from '@primeicons/vue/times-circle';
 const auth = useAuthStore()
 const router = useRouter()
 const orders = ref([])
+const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const getToken = () => auth.token || localStorage.getItem('token')
 
@@ -51,12 +52,6 @@ const loadOrders = async () => {
     }
 }
 
-const nextStatus = (status) => {
-    if (status === 'Te verwerken') return 'Verzonden'
-    if (status === 'Verzonden') return 'Geannuleerd'
-    return 'Te verwerken'
-}
-
 const handleDelete = async (order) => {
     const token = getToken()
     const orderId = order.id
@@ -73,16 +68,15 @@ const handleDelete = async (order) => {
     }
 }
 
-const handleStatus = async (order) => {
+const handleStatus = async (order, status) => {
     const token = getToken()
     const orderId = order.id
 
-    if (!token || !orderId) {
+    if (!token || !orderId || !status) {
         return
     }
 
     try {
-        const status = nextStatus(order.status)
         await updateOrderStatus(orderId, status, token)
         order.status = status
     } catch (err) {
@@ -130,7 +124,7 @@ onMounted(loadOrders)
                 <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
 
                 <Order v-for="order in orders" :key="order.id" :name="order.name" :date="order.date"
-                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)" @status="handleStatus(order)" />
+                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)" @status="handleStatus(order, $event)" />
             </div>
         </main>
     </div>
