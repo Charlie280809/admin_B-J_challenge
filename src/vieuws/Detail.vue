@@ -17,40 +17,61 @@ const orderId = computed(() => route.params.id)
 const getToken = () => auth.token || localStorage.getItem('token')
 
 const formatTimestamp = (value) => (value ? new Intl.DateTimeFormat('nl-NL', {
-	day: '2-digit',
-	month: '2-digit',
-	year: 'numeric',
-	hour: '2-digit',
-	minute: '2-digit',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
 }).format(new Date(value)) : 'Onbekend')
 
 const toList = (value) => {
-	if (!value) return []
-	if (Array.isArray(value)) return value
-	if (typeof value === 'string') return value.split(',').map((item) => item.trim()).filter(Boolean)
-	return [String(value)]
+    if (!value) return []
+    if (Array.isArray(value)) return value
+    if (typeof value === 'string') return value.split(',').map((item) => item.trim()).filter(Boolean)
+    return [String(value)]
 }
 
 const formatAddress = (address) => {
-	if (!address || typeof address !== 'object') {
-		return 'Geen adres beschikbaar'
-	}
+    if (!address || typeof address !== 'object') {
+        return 'Geen adres beschikbaar'
+    }
 
-	const parts = [address.street, address.houseNumber, address.postalCode, address.city].filter(Boolean)
-	return parts.length ? parts.join(', ') : 'Geen adres beschikbaar'
+    const parts = [address.street, address.houseNumber, address.postalCode, address.city].filter(Boolean)
+    return parts.length ? parts.join(', ') : 'Geen adres beschikbaar'
 }
 
+const flavorLabels = {
+    vanille: 'Vanille',
+    chocolate: 'Chocolate Fudge Brownie',
+    strawberry: 'Strawberry Cheesecake',
+    'cookie-dough': 'Cookie Dough',
+};
+
+const sauceLabels = {
+    chocolate: 'Chocoladesaus',
+    caramel: 'Caramelsaus',
+    strawberry: 'Aardbeiensaus',
+    'white-chocolate': 'Witte chocoladesaus',
+};
+
+const toppingsLabels = {
+    'choc-chips': 'Choco chips',
+    'cookie-crumble': 'Cookie crumble',
+    marshmallow: 'Marshmallow',
+    sprinkles: 'Sprinkles',
+};
+
 const normalizeOrder = (record) => ({
-	id: record?.id || record?._id || orderId.value,
-	customerName: record?.customerName || 'Naam onbekend',
-	address: formatAddress(record?.address),
-	smaak: record?.smaak || 'Onbekend',
-	toppings: toList(record?.toppings),
-	saus: record?.saus || 'Geen saus',
-	totalPrice: typeof record?.totalPrice === 'number' ? record.totalPrice.toFixed(2) : '0.00',
-	status: record?.status || 'Te verwerken',
-	timestamp: formatTimestamp(record?.createdAt),
-})
+    id: record?.id || record?._id || orderId.value,
+    customerName: record?.customerName || 'Naam onbekend',
+    address: formatAddress(record?.address),
+    smaak: flavorLabels[record?.smaak] || record?.smaak || 'Onbekend',
+    toppings: toList(record?.toppings).map(t => toppingsLabels[t] || t),
+    saus: sauceLabels[record?.saus] || record?.saus || 'Geen saus',
+    totalPrice: typeof record?.totalPrice === 'number' ? record.totalPrice.toFixed(2) : '0.00',
+    status: record?.status || 'Te verwerken',
+    timestamp: formatTimestamp(record?.createdAt),
+});
 
 const resolveOrder = async () => {
     const token = getToken()
