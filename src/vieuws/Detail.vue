@@ -38,7 +38,9 @@ const formatAddress = (address) => {
     }
 
     const parts = [address.street, address.houseNumber, address.postalCode, address.city].filter(Boolean)
-    return parts.length ? parts.join(', ') : 'Geen adres beschikbaar'
+    const streetAndNumber = parts[0] && parts[1] ? `${parts[0]} ${parts[1]}` : parts[0] || parts[1]
+    const postalAndCity = parts[2] && parts[3] ? `${parts[2]} ${parts[3]}` : parts[2] || parts[3]
+    return [streetAndNumber, postalAndCity].filter(Boolean).join(', ') || 'Geen adres beschikbaar'
 }
 
 const flavorLabels = {
@@ -146,9 +148,9 @@ watch(orderId, resolveOrder)
 
 <template>
     <main class="detail-page">
-        <div class="detail-card">
-            <button class="back-button" type="button" @click="goBack">Terug naar dashboard</button>
+        <button class="back-button" type="button" @click="goBack">Terug naar dashboard</button>
 
+        <div class="detail-card">
             <p v-if="loading" class="detail-state">Bestelling laden...</p>
             <p v-else-if="error" class="detail-state detail-state--error">{{ error }}</p>
 
@@ -174,27 +176,29 @@ watch(orderId, resolveOrder)
                 </div>
 
                 <div>
-                    <p class="detail-label">Adres</p>
-                    <p>{{ order.address }}</p>
-                </div>
-
-                <div>
                     <p class="detail-label">Totaalprijs</p>
                     <p>{{ formatPrice(order.totalPrice) }}</p>
                 </div>
 
                 <div>
-                    <p class="detail-label">Timestamp</p>
-                    <p>{{ order.timestamp }}</p>
+                    <p class="detail-label">Adres</p>
+                    <p>{{ order.address }}</p>
                 </div>
 
-                <div>
-                    <p class="detail-label">Status</p>
-                    <select class="detail-status" :value="order.status" @change="handleStatusChange">
-                        <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
-                            {{ statusOption }}
-                        </option>
-                    </select>
+                <div class="detail-bottom">
+                    <div>
+                        <p class="detail-label">Orderdatum</p>
+                        <p>{{ order.timestamp }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Status</p>
+                        <select class="detail-status" :value="order.status" @change="handleStatusChange">
+                            <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
+                                {{ statusOption }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </section>
         </div>
@@ -204,15 +208,19 @@ watch(orderId, resolveOrder)
 <style scoped>
 .detail-page {
     min-height: 100vh;
-    padding: 32px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: linear-gradient(180deg, #f7f5ef 0%, #eef4f8 100%);
     font-family: 'Proxima Nova', sans-serif;
+    font-size: 1.2rem;
 }
 
 .detail-card {
     max-width: 920px;
+    width: 60%;
     margin: 0 auto;
-    padding: 28px;
+    padding: 32px;
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 24px 60px rgba(17, 24, 39, 0.12);
@@ -220,13 +228,18 @@ watch(orderId, resolveOrder)
 }
 
 .back-button {
+    position: absolute;
+    top: 24px;
+    left: 24px;
     margin-bottom: 24px;
     padding: 12px 18px;
     border: 0;
     border-radius: 999px;
     background: #09121a;
     color: #fff;
+    font-family: 'Proxima Nova', sans-serif;
     font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
 }
 
@@ -266,16 +279,22 @@ watch(orderId, resolveOrder)
     line-height: 1.05;
 }
 
+.detail-grid .detail-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
 .detail-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid rgba(247, 168, 0, 0.5);
     background: rgba(247, 168, 0, 0.18);
     color: #09121a;
-    font-weight: 700;
+    font-size: 1rem;
+    font-family: 'Proxima Nova', sans-serif;
     cursor: pointer;
 }
 
