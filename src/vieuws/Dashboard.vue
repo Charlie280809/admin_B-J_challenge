@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../services/auth.js'
 import { deleteOrder, getOrders, updateOrderStatus } from '../services/api.js'
@@ -15,6 +15,7 @@ import SignOut from '@primeicons/vue/sign-out';
 const auth = useAuthStore()
 const router = useRouter()
 const orders = ref([])
+const sortOrder = ref('newest')
 const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const getToken = () => auth.token || localStorage.getItem('token')
@@ -94,6 +95,15 @@ const handleOpen = (order) => {
     router.push({ name: 'detail', params: { id: order.id } })
 }
 
+const sortedOrders = computed(() => {
+    const list = [...orders.value]
+    return list.sort((a, b) => {
+        const dateA = new Date(a.raw.createdAt || a.raw.date || a.raw.created_at)
+        const dateB = new Date(b.raw.createdAt || b.raw.date || b.raw.created_at)
+        return sortOrder.value === 'newest' ? dateB - dateA : dateA - dateB
+    })
+})
+
 onMounted(loadOrders)
 </script>
 
@@ -116,19 +126,28 @@ onMounted(loadOrders)
                 <TimesCircle /> Geannuleerd
             </button>
 
-            <button class="logoutBtn" @click="auth.logout" type="button"> <SignOut/> Uitloggen</button>
+            <button class="logoutBtn" @click="auth.logout" type="button">
+                <SignOut /> Uitloggen
+            </button>
         </aside>
 
         <main class="mainContent">
             <header class="mainContent_top">
-                <h2>Dashboard</h2>
-                <p>{{ orders.length }} bestellingen:</p>
+                <div>
+                    <h2>Dashboard</h2>
+                    <p>{{ orders.length }} bestellingen:</p>
+                </div>
+                <button type="button" class="sort-btn"
+                    @click="sortOrder = sortOrder === 'newest' ? 'oldest' : 'newest'">
+                    {{ sortOrder === 'newest' ? '↑↓ Nieuwste eerst' : '↓↑ Oudste eerst' }}
+                </button>
+
             </header>
 
             <div class="order-list">
                 <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
 
-                <Order v-for="order in orders" :key="order.id" :name="order.name" :date="order.date"
+                <Order v-for="order in sortedOrders" :key="order.id" :name="order.name" :date="order.date"
                     :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)"
                     @status="handleStatus(order, $event)" />
             </div>
@@ -212,6 +231,13 @@ onMounted(loadOrders)
     gap: 22px;
 }
 
+.mainContent_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .mainContent_top h2 {
     margin: 0 0 20px;
     font-family: 'ChunkFive', sans-serif;
@@ -225,6 +251,28 @@ onMounted(loadOrders)
     color: #6B7280;
 }
 
+.sort-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--blue);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-family: 'Proxima Nova', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+}
+
+.sort-btn:hover {
+    background: var(--lightblue);
+    border-color: var(--darkblue);
+}
+
+.sort-btn:active {
+    transform: translateY(2px);
+}
+
 .order-list {
     display: flex;
     flex-direction: column;
@@ -234,9 +282,6 @@ onMounted(loadOrders)
 .state-message {
     margin: 0;
     padding: 18px 20px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #f8fafc;
 }
 
 .state-message--error {
