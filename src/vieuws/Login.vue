@@ -7,6 +7,8 @@ const password = ref('')
 const auth = useAuthStore()
 
 const handleLogin = async () => {
+    if (auth.loading) return
+
     await auth.login(email.value, password.value)
 }
 </script>
@@ -15,42 +17,73 @@ const handleLogin = async () => {
     <div class="login-page">
         <div class="login">
             <h1>Admin Login</h1>
-            <label for="email">E-mail
-                <input class="form-input" v-model="email" type="email" placeholder="E-mail" />
+            <label for="email">
+                E-mail
+                <input id="email" class="form-input" v-model="email" type="email" placeholder="E-mail"
+                    :disabled="auth.loading" />
             </label>
-            <label for="password">Wachtwoord
-                <input class="form-input" v-model="password" type="password" placeholder="Wachtwoord" />
+
+            <label for="password">
+                Wachtwoord
+                <input id="password" class="form-input" v-model="password" type="password" placeholder="Wachtwoord"
+                    :disabled="auth.loading" @keyup.enter="handleLogin" />
             </label>
-            <button @click="handleLogin">Inloggen</button>
+
+            <button @click="handleLogin" :disabled="auth.loading" :class="{ loading: auth.loading }">
+                <span v-if="auth.loading" class="spinner"></span>
+                <span>{{ auth.loading ? 'Inloggen...' : 'Inloggen' }}</span>
+            </button>
         </div>
     </div>
 </template>
 
 <style>
-/* .login-page {
+.login button {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: linear-gradient(180deg, #f7f5ef 0%, #eef4f8 100%);
-}
-
-.login {
-    max-width: 350px;
-    margin: 50px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-input {
-    padding: 10px;
-}
-
-button {
-    padding: 10px;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+    width: 80%;
+    border: 0;
+    border-radius: 999px;
+    background: var(--gold);
+    font-family: 'ChunkFive', sans-serif;
+    font-size: 1.1rem;
     cursor: pointer;
-} */
+    margin: 0 auto;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.login button:hover:not(:disabled) {
+    background: #F1DA50;
+    transform: translateY(-1px);
+}
+
+.login button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.login button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(35, 31, 32, 0.25);
+    border-top-color: #231F20;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .login-page {
     min-height: 100vh;
@@ -83,7 +116,7 @@ button {
     text-align: center;
 }
 
-label{
+label {
     font-size: 1.1rem;
 }
 

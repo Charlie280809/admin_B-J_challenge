@@ -104,6 +104,15 @@ const sortedOrders = computed(() => {
     })
 })
 
+const handleLogout = () => {
+    console.log('LOGOUT BUTTON GEKLIKT')
+    console.log('Token voor logout:', auth.token)
+
+    auth.logout()
+
+    console.log('Token na logout:', auth.token)
+}
+
 onMounted(loadOrders)
 </script>
 
@@ -126,7 +135,7 @@ onMounted(loadOrders)
                 <TimesCircle /> Geannuleerd
             </button>
 
-            <button class="logoutBtn" @click="auth.logout" type="button">
+            <button class="logoutBtn" @click="handleLogout" type="button">
                 <SignOut /> Uitloggen
             </button>
         </aside>
@@ -145,7 +154,7 @@ onMounted(loadOrders)
             </header>
 
             <div class="order-list">
-                <p v-if="!orders.length" class="state-message">Er zijn nog geen bestellingen om te tonen.</p>
+                <p v-if="!orders.length" class="state-message">De bestellingen worden geladen...</p>
 
                 <Order v-for="order in sortedOrders" :key="order.id" :name="order.name" :date="order.date"
                     :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)"
