@@ -193,7 +193,11 @@ watch(orderId, resolveOrder)
 
                     <div>
                         <p class="detail-label">Status</p>
-                        <select class="detail-status" :value="order.status" @change="handleStatusChange">
+                        <select class="detail-status" :class="{
+                            'status-cancelled': order.status === 'Geannuleerd',
+                            'status-pending': order.status === 'Te verwerken',
+                            'status-shipped': order.status === 'Verzonden'
+                        }" :value="order.status" @change="handleStatusChange">
                             <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
                                 {{ statusOption }}
                             </option>
@@ -301,5 +305,17 @@ watch(orderId, resolveOrder)
 .detail-status:focus-visible {
     outline: 3px solid rgba(247, 168, 0, 0.8);
     outline-offset: 2px;
+}
+
+.detail-status.status-cancelled {
+    background: #DF9B95;
+}
+
+.detail-status.status-pending {
+    background: #F7A800;
+}
+
+.detail-status.status-shipped {
+    background: #8BCF8B;
 }
 </style>

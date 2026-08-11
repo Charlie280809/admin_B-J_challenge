@@ -1,15 +1,22 @@
 <script setup>
+import { computed } from 'vue'
 import Trash from '@primeicons/vue/trash';
 
 const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const emit = defineEmits(['delete', 'status', 'select'])
 
-defineProps({
+const props = defineProps({
 	name: String,
 	date: String,
 	status: String,
 })
+
+const statusClass = computed(() => ({
+	'status-cancelled': props.status === 'Geannuleerd',
+	'status-pending': props.status === 'Te verwerken',
+	'status-shipped': props.status === 'Verzonden',
+}))
 </script>
 
 <template>
@@ -18,7 +25,8 @@ defineProps({
 		<div class="order_name">
 			<h3>{{ name }}</h3>
 
-			<select class="order_status" :value="status" @click.stop @change="emit('status', $event.target.value)">
+			<select class="order_status" :class="statusClass" :value="status" @click.stop
+				@change="emit('status', $event.target.value)">
 				<option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
 					{{ statusOption }}
 				</option>
@@ -130,5 +138,17 @@ defineProps({
 .order_status:hover {
 	opacity: 0.6;
 	transition: all 0.2s ease-in-out;
+}
+
+.order_status.status-cancelled {
+	background: #DF9B95;
+}
+
+.order_status.status-pending {
+	background: #F7A800;
+}
+
+.order_status.status-shipped {
+	background: #8BCF8B;
 }
 </style>
