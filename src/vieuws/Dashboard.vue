@@ -16,6 +16,7 @@ const auth = useAuthStore()
 const router = useRouter()
 const orders = ref([])
 const sortOrder = ref('newest')
+const selectedStatus = ref(null)
 const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const getToken = () => auth.token || localStorage.getItem('token')
@@ -95,8 +96,13 @@ const handleOpen = (order) => {
     router.push({ name: 'detail', params: { id: order.id } })
 }
 
+const selectStatus = (status) => { selectedStatus.value = status }
+
 const sortedOrders = computed(() => {
-    const list = [...orders.value]
+    let list = [...orders.value]
+    if (selectedStatus.value) {
+        list = list.filter((order) => order.status === selectedStatus.value)
+    }
     return list.sort((a, b) => {
         const dateA = new Date(a.raw.createdAt || a.raw.date || a.raw.created_at)
         const dateB = new Date(b.raw.createdAt || b.raw.date || b.raw.created_at)
@@ -105,33 +111,30 @@ const sortedOrders = computed(() => {
 })
 
 const handleLogout = () => {
-    console.log('LOGOUT BUTTON GEKLIKT')
-    console.log('Token voor logout:', auth.token)
-
     auth.logout()
-
-    console.log('Token na logout:', auth.token)
 }
 
-onMounted(loadOrders)
-</script>
+onMounted(loadOrders) </script>
 
 <template>
     <div class="dashboard-shell">
         <aside class="sideNav">
             <img :src="logo" alt="Ben & Jerry's logo">
 
-            <button type="button">
+            <button type="button" :class="{ active: selectedStatus === null }" @click="selectStatus(null)">
                 <List /> Alle bestellingen
             </button>
 
-            <button type="button">
+            <button type="button" :class="{ active: selectedStatus === 'Verzonden' }"
+                @click="selectStatus('Verzonden')">
                 <CheckCircle /> Verzonden
             </button>
-            <button type="button">
+            <button type="button" :class="{ active: selectedStatus === 'Te verwerken' }"
+                @click="selectStatus('Te verwerken')">
                 <SpinnerDotted /> Te verwerken
             </button>
-            <button type="button">
+            <button type="button" :class="{ active: selectedStatus === 'Geannuleerd' }"
+                @click="selectStatus('Geannuleerd')">
                 <TimesCircle /> Geannuleerd
             </button>
 
@@ -144,7 +147,7 @@ onMounted(loadOrders)
             <header class="mainContent_top">
                 <div>
                     <h2>Dashboard</h2>
-                    <p>{{ orders.length }} bestellingen:</p>
+                    <p>{{ sortedOrders.length }} bestellingen:</p>
                 </div>
                 <button type="button" class="sort-btn"
                     @click="sortOrder = sortOrder === 'newest' ? 'oldest' : 'newest'">
@@ -216,8 +219,7 @@ onMounted(loadOrders)
     transition: all 0.2s ease-in-out;
 }
 
-.sideNav button:active {
-    background: white;
+.sideNav button.active {
     border: 2px solid var(--darkblue);
     transform: translateY(0);
     transition: all 0.1s ease-in-out;
