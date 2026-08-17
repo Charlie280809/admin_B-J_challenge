@@ -15,9 +15,9 @@ import SignOut from '@primeicons/vue/sign-out';
 const auth = useAuthStore()
 const router = useRouter()
 const orders = ref([])
+const loading = ref(true)
 const sortOrder = ref('newest')
 const selectedStatus = ref(null)
-const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 
 const getToken = () => auth.token || localStorage.getItem('token')
 
@@ -44,6 +44,7 @@ const loadOrders = async () => {
     const token = getToken()
 
     if (!token) {
+        loading.value = false
         return
     }
 
@@ -53,6 +54,8 @@ const loadOrders = async () => {
         orders.value = list.map(formatOrder)
     } catch (err) {
         console.error('Failed to load orders:', err)
+    } finally {
+        loading.value = false
     }
 }
 
@@ -157,7 +160,8 @@ onMounted(loadOrders) </script>
             </header>
 
             <div class="order-list">
-                <p v-if="!orders.length" class="state-message">De bestellingen worden geladen...</p>
+                <p v-if="loading" class="state-message">Bestellingen worden geladen...</p>
+                <p v-else-if="!orders.length" class="state-message">Er zijn nog geen bestellingen</p>
 
                 <Order v-for="order in sortedOrders" :key="order.id" :name="order.name" :date="order.date"
                     :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)"
@@ -293,10 +297,5 @@ onMounted(loadOrders) </script>
 .state-message {
     margin: 0;
     padding: 18px 20px;
-}
-
-.state-message--error {
-    background: rgba(185, 28, 28, 0.18);
-    color: #fecaca;
 }
 </style>
