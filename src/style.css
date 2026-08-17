@@ -14,18 +14,12 @@
 
 :root {
   --bg: #fff;
-
   --sans: 'Proxima Nova', sans-serif;
-  --heading: 'ChunkFive', serif;
-  --mono: ui-monospace, Consolas, monospace;
-
   --gold: #FDB913;
   --black: #231F20;
   --blue: #40B4E5;
   --lightblue: #C4E7F3;
   --darkblue: #002F87;
-  --green: #41873F;
-  --lightgreen: #82BC00;
   --red: #E2231A;
   --darkred: #D13239;
 
