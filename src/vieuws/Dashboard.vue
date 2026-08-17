@@ -31,8 +31,8 @@ const formatOrder = (order) => ({
         [order.firstName, order.lastName].filter(Boolean).join(' ') ||
         'Naam onbekend',
     date: new Intl.DateTimeFormat('nl-NL', {
-        day: '2-digit',
-        month: '2-digit',
+        day: 'numeric',
+        month: 'long',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
@@ -164,8 +164,8 @@ onMounted(loadOrders) </script>
                 <p v-else-if="!orders.length" class="state-message">Er zijn nog geen bestellingen</p>
 
                 <Order v-for="order in sortedOrders" :key="order.id" :name="order.name" :date="order.date"
-                    :status="order.status" @select="handleOpen(order)" @delete="handleDelete(order)"
-                    @status="handleStatus(order, $event)" />
+                    :status="order.status" :address="order.raw.address" @select="handleOpen(order)"
+                    @delete="handleDelete(order)" @status="handleStatus(order, $event)" />
             </div>
         </main>
     </div>
