@@ -8,7 +8,6 @@ const auth = useAuthStore()
 
 const handleLogin = async () => {
     if (auth.loading) return
-
     await auth.login(email.value, password.value)
 }
 </script>
@@ -29,10 +28,12 @@ const handleLogin = async () => {
                     :disabled="auth.loading" @keyup.enter="handleLogin" />
             </label>
 
-            <button @click="handleLogin" :disabled="auth.loading" :class="{ loading: auth.loading }">
+            <button @click="handleLogin" :disabled="auth.loading || !email || !password">
                 <span v-if="auth.loading" class="spinner"></span>
                 <span>{{ auth.loading ? 'Inloggen...' : 'Inloggen' }}</span>
             </button>
+
+            <p v-if="auth.error" class="error-message">{{ auth.error }}</p>
         </div>
     </div>
 </template>
@@ -55,6 +56,11 @@ const handleLogin = async () => {
     transition: background 0.2s ease, transform 0.15s ease;
 }
 
+.login button:disabled {
+    background-color: lightgrey;
+    cursor: not-allowed;
+}
+
 .login button:hover:not(:disabled) {
     background: #F1DA50;
     transform: translateY(-1px);
@@ -64,17 +70,11 @@ const handleLogin = async () => {
     transform: translateY(1px);
 }
 
-.login button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
 .spinner {
     width: 16px;
     height: 16px;
     border: 2px solid rgba(35, 31, 32, 0.25);
-    border-top-color: #231F20;
+    border-top-color: var(--black);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
 }
@@ -96,23 +96,11 @@ const handleLogin = async () => {
     font-family: 'Proxima Nova', sans-serif;
 }
 
-.login-card {
-    width: 100%;
-    max-width: 400px;
-    padding: 40px 32px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(35, 31, 32, 0.1);
-}
-
 .login h1 {
     margin: 0 0 32px 0;
     font-family: 'ChunkFive', sans-serif;
     font-size: 2rem;
-    color: #231F20;
+    color: var(--black);
     text-align: center;
 }
 
@@ -128,7 +116,7 @@ label {
     border-radius: 12px;
     font-size: 1rem;
     font-family: 'Proxima Nova', sans-serif;
-    color: #231F20;
+    color: var(--black);
     outline: none;
     box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -139,32 +127,13 @@ label {
 }
 
 .form-input:focus {
-    border-color: #002F87;
+    border-color: var(--darkblue);
     box-shadow: 0 0 0 3px rgba(0, 47, 135, 0.15);
 }
 
-.login button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    width: 80%;
-    border: 0;
-    border-radius: 999px;
-    background: var(--gold);
-    font-family: 'ChunkFive', sans-serif;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin: 0 auto;
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.login button:hover {
-    background: #F1DA50;
-    transform: translateY(-1px);
-}
-
-.login button:active {
-    transform: translateY(1px);
+.error-message {
+    color: var(--darkred);
+    text-align: center;
+    margin-top: 18px;
 }
 </style>
