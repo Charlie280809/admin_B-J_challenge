@@ -18,8 +18,8 @@ const orderId = computed(() => route.params.id)
 const getToken = () => auth.token || localStorage.getItem('token')
 
 const formatTimestamp = (value) => (value ? new Intl.DateTimeFormat('nl-NL', {
-    day: '2-digit',
-    month: '2-digit',
+    day: 'numeric',
+    month: 'long',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
@@ -48,6 +48,8 @@ const flavorLabels = {
     chocolate: 'Chocolate Fudge Brownie',
     strawberry: 'Strawberry Cheesecake',
     'cookie-dough': 'Cookie Dough',
+    blueberry: 'Blueberry Burst',
+    passion: 'Passion Fruit',
 };
 
 const sauceLabels = {
@@ -62,6 +64,7 @@ const toppingsLabels = {
     'cookie-crumble': 'Cookie crumble',
     marshmallow: 'Marshmallow',
     sprinkles: 'Sprinkles',
+    brownie: 'Brownie bits',
 };
 
 const normalizeOrder = (record) => ({
@@ -155,37 +158,18 @@ watch(orderId, resolveOrder)
             <p v-else-if="error" class="detail-state detail-state--error">{{ error }}</p>
 
             <section v-else-if="order" class="detail-grid">
-                <div>
-                    <p class="detail-label">Naam</p>
-                    <h1>{{ order.customerName }}</h1>
-                </div>
+                <div class="detail-left">
+                    <h2>Klantinformatie</h2>
+                    <div>
+                        <p class="detail-label">Naam</p>
+                        <h1>{{ order.customerName }}</h1>
+                    </div>
 
-                <div>
-                    <p class="detail-label">Smaak</p>
-                    <p>{{ order.smaak }}</p>
-                </div>
+                    <div>
+                        <p class="detail-label">Adres</p>
+                        <p>{{ order.address }}</p>
+                    </div>
 
-                <div>
-                    <p class="detail-label">Toppings</p>
-                    <p>{{ order.toppings.length ? order.toppings.join(', ') : 'Geen toppings' }}</p>
-                </div>
-
-                <div>
-                    <p class="detail-label">Saus</p>
-                    <p>{{ order.saus }}</p>
-                </div>
-
-                <div>
-                    <p class="detail-label">Totaalprijs</p>
-                    <p>{{ formatPrice(order.totalPrice) }}</p>
-                </div>
-
-                <div>
-                    <p class="detail-label">Adres</p>
-                    <p>{{ order.address }}</p>
-                </div>
-
-                <div class="detail-bottom">
                     <div>
                         <p class="detail-label">Orderdatum</p>
                         <p>{{ order.timestamp }}</p>
@@ -193,15 +177,41 @@ watch(orderId, resolveOrder)
 
                     <div>
                         <p class="detail-label">Status</p>
-                        <select class="detail-status" :class="{
-                            'status-cancelled': order.status === 'Geannuleerd',
-                            'status-pending': order.status === 'Te verwerken',
-                            'status-shipped': order.status === 'Verzonden'
-                        }" :value="order.status" @change="handleStatusChange">
-                            <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
-                                {{ statusOption }}
-                            </option>
-                        </select>
+                        <span class="status-wrapper">
+                            <select class="detail-status" :class="{
+                                'status-cancelled': order.status === 'Geannuleerd',
+                                'status-pending': order.status === 'Te verwerken',
+                                'status-shipped': order.status === 'Verzonden'
+                            }" :value="order.status" @change="handleStatusChange">
+                                <option v-for="statusOption in STATUS_OPTIONS" :key="statusOption"
+                                    :value="statusOption">
+                                    {{ statusOption }}
+                                </option>
+                            </select>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detail-right">
+                    <h2>Bestelling</h2>
+                    <div>
+                        <p class="detail-label">Smaak</p>
+                        <p>{{ order.smaak }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Toppings</p>
+                        <p>{{ order.toppings.length ? order.toppings.join(', ') : 'Geen toppings' }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Saus</p>
+                        <p>{{ order.saus }}</p>
+                    </div>
+
+                    <div>
+                        <p class="detail-label">Totaalprijs</p>
+                        <p>{{ formatPrice(order.totalPrice) }}</p>
                     </div>
                 </div>
             </section>
@@ -260,6 +270,14 @@ watch(orderId, resolveOrder)
 
 .detail-grid {
     display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.detail-left,
+.detail-right {
+    display: flex;
+    flex-direction: column;
     gap: 22px;
 }
 
@@ -283,9 +301,41 @@ watch(orderId, resolveOrder)
     line-height: 1.05;
 }
 
-.detail-grid .detail-bottom {
-    display: flex;
-    justify-content: space-between;
+.detail-status {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: fit-content;
+    padding: 6px 32px 6px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(247, 168, 0, 0.5);
+    color: var(--black);
+    font-family: 'Proxima Nova', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.detail-status.status-cancelled {
+    background: #ebaaa4;
+    --hover: #e08b83;
+}
+
+.detail-status.status-pending {
+    background: #ffd06a;
+    --hover: #f4c057;
+}
+
+.detail-status.status-shipped {
+    background: #a3e1a3;
+    --hover: #71d171;
+}
+
+.detail-status:hover {
+    background: var(--hover);
 }
 
 .detail-status {
@@ -300,6 +350,35 @@ watch(orderId, resolveOrder)
     font-family: 'Proxima Nova', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: fit-content;
+    padding: 8px 32px 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(247, 168, 0, 0.5);
+    color: var(--black);
+    font-family: 'Proxima Nova', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.status-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.status-wrapper::after {
+    content: "▼";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .detail-status.status-cancelled {
