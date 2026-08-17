@@ -10,6 +10,7 @@ const props = defineProps({
 	name: String,
 	date: String,
 	status: String,
+	address: { type: Object, default: () => ({}) }
 })
 
 const statusClass = computed(() => ({
@@ -22,9 +23,15 @@ const statusClass = computed(() => ({
 <template>
 	<article class="order-card" role="button" tabindex="0" @click="emit('select')" @keydown.enter="emit('select')"
 		@keydown.space.prevent="emit('select')">
-		<div class="order_name">
-			<h3>{{ name }}</h3>
+		<h3 class="order-name">{{ name }}</h3>
 
+		<p class="order-date">{{ date }}</p>
+
+		<p class="order-street">{{ address.street }} {{ address.houseNumber }}</p>
+
+		<p class="order-city">{{ address.postalCode }} {{ address.city }}</p>
+
+		<div class="select-wrapper">
 			<select class="order_status" :class="statusClass" :value="status" @click.stop
 				@change="emit('status', $event.target.value)">
 				<option v-for="statusOption in STATUS_OPTIONS" :key="statusOption" :value="statusOption">
@@ -33,25 +40,22 @@ const statusClass = computed(() => ({
 			</select>
 		</div>
 
-		<div class="order_timestamp">
-			<p>{{ date }}</p>
-
-			<button class="trashBtn" type="button" aria-label="Verwijder bestelling" @click.stop="emit('delete')">
-				<span>
-					<Trash />
-				</span>
-				Verwijder bestelling
-			</button>
-		</div>
+		<button class="trashBtn" type="button" title="Verwijder bestelling" @click.stop="emit('delete')">
+			<span>
+				<Trash />
+			</span>
+		</button>
 	</article>
 </template>
 
 <style scoped>
 .order-card {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	gap: 16px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: auto auto;
+	gap: 12px 24px;
+	align-items: center;
+	justify-content: center;
 	padding: 20px 24px;
 	background: #f3f4f6;
 	color: var(--black);
@@ -65,46 +69,91 @@ const statusClass = computed(() => ({
 	transition: all 0.2s ease-in-out;
 }
 
-.order_name,
-.order_timestamp {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-}
-
-.order-card h3 {
+.order-name {
+	grid-column: 1;
+	grid-row: 1;
 	margin: 0;
 	font-family: 'Proxima Nova', sans-serif;
 	font-size: 1.25rem;
-	line-height: 1.1;
 	font-weight: 700;
 	letter-spacing: -0.01em;
-	text-align: left;
 }
 
-.order-card p {
+.order-date {
+	grid-column: 1;
+	grid-row: 2;
+	margin: 0;
+	font-size: 1rem;
+	color: #6B7280;
+}
+
+.order-street {
+	grid-column: 2;
+	grid-row: 1;
 	margin: 0;
 	font-size: 1.15rem;
-	text-align: left;
 }
 
-.order_timestamp p {
-	font-size: 1rem;
+.order-city {
+	grid-column: 2;
+	grid-row: 2;
+	margin: 0;
+	font-size: 1.15rem;
 }
+
+.select-wrapper {
+	position: relative;
+	display: inline-flex;
+	grid-column: 3;
+	grid-row: 1;
+	justify-self: end;
+}
+
+.order_status {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	min-width: fit-content;
+	padding: 8px 32px 8px 12px;
+	border-radius: 8px;
+	border: none;
+	background: rgba(247, 168, 0, 0.5);
+	color: var(--black);
+	font-family: 'Proxima Nova', sans-serif;
+	font-size: 1.1rem;
+	line-height: 1;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.select-wrapper::after {
+	content: "▼";
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.order_status.status-cancelled { background: #ebaaa4; --hover: #e08b83; }
+.order_status.status-pending { background: #ffd06a; --hover: #f4c057; }
+.order_status.status-shipped { background: #a3e1a3; --hover: #71d171; }
+.order_status:hover { background: var(--hover); }
 
 .trashBtn {
+	grid-column: 3;
+	grid-row: 2;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
-	padding: 8px 12px;
+	padding: 6px 8px;
 	border: 2px solid #DF9B95;
 	border-radius: 8px;
 	color: var(--black);
 	font-family: 'Proxima Nova', sans-serif;
-	font-size: 0.95rem;
+	font-size: 0.85rem;
 	cursor: pointer;
+	justify-self: end;
 }
 
 .trashBtn:hover {
@@ -116,41 +165,6 @@ const statusClass = computed(() => ({
 
 .trashBtn span {
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	color: var(--red);
-}
-
-.order_status {
-	min-width: fit-content;
-	padding: 6px 12px;
-	border-radius: 8px;
-	border: 2px solid var(--black);
-	background: rgba(247, 168, 0, 0.5);
-	color: var(--black);
-	font-family: 'Proxima Nova', sans-serif;
-	font-size: 1.1rem;
-	line-height: 1;
-	cursor: pointer;
-	transition: all 0.2s ease-in-out;
-}
-
-.order_status.status-cancelled {
-	background: #ebaaa4;
-	--hover: #e08b83;
-}
-
-.order_status.status-pending {
-	background: #ffd06a;
-	--hover: #f4c057;
-}
-
-.order_status.status-shipped {
-	background: #a3e1a3;
-	--hover: #71d171;
-}
-
-.order_status:hover {
-	background: var(--hover);
 }
 </style>
