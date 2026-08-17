@@ -161,22 +161,22 @@ watch(orderId, resolveOrder)
                 <div class="detail-left">
                     <h2>Klantinformatie</h2>
                     <div>
-                        <p class="detail-label">Naam</p>
-                        <h1>{{ order.customerName }}</h1>
+                        <p class="detail-label">Naam:</p>
+                        <p>{{ order.customerName }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Adres</p>
+                        <p class="detail-label">Adres:</p>
                         <p>{{ order.address }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Orderdatum</p>
+                        <p class="detail-label">Besteldatum:</p>
                         <p>{{ order.timestamp }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Status</p>
+                        <p class="detail-label">Status:</p>
                         <span class="status-wrapper">
                             <select class="detail-status" :class="{
                                 'status-cancelled': order.status === 'Geannuleerd',
@@ -195,22 +195,22 @@ watch(orderId, resolveOrder)
                 <div class="detail-right">
                     <h2>Bestelling</h2>
                     <div>
-                        <p class="detail-label">Smaak</p>
+                        <p class="detail-label">Smaak:</p>
                         <p>{{ order.smaak }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Toppings</p>
+                        <p class="detail-label">Toppings:</p>
                         <p>{{ order.toppings.length ? order.toppings.join(', ') : 'Geen toppings' }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Saus</p>
+                        <p class="detail-label">Saus:</p>
                         <p>{{ order.saus }}</p>
                     </div>
 
                     <div>
-                        <p class="detail-label">Totaalprijs</p>
+                        <p class="detail-label">Totaalprijs:</p>
                         <p>{{ formatPrice(order.totalPrice) }}</p>
                     </div>
                 </div>
@@ -225,13 +225,12 @@ watch(orderId, resolveOrder)
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(180deg, #f7f5ef 0%, #eef4f8 100%);
+    background: linear-gradient(135deg, var(--bg) 0%, var(--lightblue) 150%);
     font-family: 'Proxima Nova', sans-serif;
     font-size: 1.2rem;
 }
 
 .detail-card {
-    max-width: 920px;
     width: 60%;
     margin: 0 auto;
     padding: 32px;
@@ -247,21 +246,29 @@ watch(orderId, resolveOrder)
     left: 24px;
     margin-bottom: 24px;
     padding: 12px 18px;
-    border: 0;
+    border: 2px solid var(--blue);
     border-radius: 8px;
-    background: var(--black);
-    color: #fff;
+    background: var(--bg);
     font-family: 'Proxima Nova', sans-serif;
-    font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.back-button:hover{
+    background: var(--lightblue);
+    border-color: var(--darkblue);
+}
+
+.back-button:active{
+    transform: translateY(2px);
 }
 
 .detail-state {
     margin: 0;
     padding: 20px 0;
     font-size: 1.05rem;
-    color: #09121a;
+    color: var(--black);
 }
 
 .detail-state--error {
@@ -271,86 +278,34 @@ watch(orderId, resolveOrder)
 .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: 80px;
+}
+
+.detail-grid h2{
+    font-family: 'ChunkFive';
+}
+
+.detail-grid p {
+    margin: 0;
+    color: var(--black);
 }
 
 .detail-left,
 .detail-right {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 24px;
 }
 
-.detail-label {
-    margin: 0 0 6px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #6b7280;
-}
-
-.detail-grid h1,
-.detail-grid p {
-    margin: 0;
-    color: #09121a;
-}
-
-.detail-grid h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.05;
-}
-
-.detail-status {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    min-width: fit-content;
-    padding: 6px 32px 6px 12px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(247, 168, 0, 0.5);
-    color: var(--black);
-    font-family: 'Proxima Nova', sans-serif;
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    position: relative;
-}
-
-.detail-status.status-cancelled {
-    background: #ebaaa4;
-    --hover: #e08b83;
-}
-
-.detail-status.status-pending {
-    background: #ffd06a;
-    --hover: #f4c057;
-}
-
-.detail-status.status-shipped {
-    background: #a3e1a3;
-    --hover: #71d171;
-}
-
-.detail-status:hover {
-    background: var(--hover);
+.detail-label{
+    padding: 0 0 8px 0;
+    text-decoration: underline;
 }
 
 .detail-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    color: #09121a;
-    font-size: 1rem;
-    font-family: 'Proxima Nova', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
