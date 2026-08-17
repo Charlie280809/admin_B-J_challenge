@@ -60,9 +60,9 @@ const statusClass = computed(() => ({
 	cursor: pointer;
 }
 
-.order-card:focus-visible {
-	outline: 3px solid rgba(247, 168, 0, 0.8);
-	outline-offset: 3px;
+.order-card:hover {
+	background-color: #e5e7eb;
+	transition: all 0.2s ease-in-out;
 }
 
 .order_name,
@@ -101,10 +101,9 @@ const statusClass = computed(() => ({
 	padding: 8px 12px;
 	border: 2px solid #DF9B95;
 	border-radius: 8px;
-	color: #09121a;
+	color: var(--black);
 	font-family: 'Proxima Nova', sans-serif;
-	font-size: 1rem;
-	line-height: 1;
+	font-size: 0.95rem;
 	cursor: pointer;
 }
 
@@ -126,29 +125,32 @@ const statusClass = computed(() => ({
 	min-width: fit-content;
 	padding: 6px 12px;
 	border-radius: 8px;
-	border: 2px solid #F7A800;
+	border: 2px solid var(--black);
 	background: rgba(247, 168, 0, 0.5);
 	color: var(--black);
 	font-family: 'Proxima Nova', sans-serif;
 	font-size: 1.1rem;
 	line-height: 1;
 	cursor: pointer;
-}
-
-.order_status:hover {
-	opacity: 0.6;
 	transition: all 0.2s ease-in-out;
 }
 
 .order_status.status-cancelled {
-	background: #DF9B95;
+	background: #ebaaa4;
+	--hover: #e08b83;
 }
 
 .order_status.status-pending {
-	background: #F7A800;
+	background: #ffd06a;
+	--hover: #f4c057;
 }
 
 .order_status.status-shipped {
-	background: #8BCF8B;
+	background: #a3e1a3;
+	--hover: #71d171;
+}
+
+.order_status:hover {
+	background: var(--hover);
 }
 </style>
