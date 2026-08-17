@@ -148,7 +148,7 @@ watch(orderId, resolveOrder)
 
 <template>
     <main class="detail-page">
-        <button class="back-button" type="button" @click="goBack">Terug naar dashboard</button>
+        <button class="back-button" type="button" @click="goBack"> ← Terug naar dashboard</button>
 
         <div class="detail-card">
             <p v-if="loading" class="detail-state">Bestelling laden...</p>
@@ -238,8 +238,8 @@ watch(orderId, resolveOrder)
     margin-bottom: 24px;
     padding: 12px 18px;
     border: 0;
-    border-radius: 999px;
-    background: #09121a;
+    border-radius: 8px;
+    background: var(--black);
     color: #fff;
     font-family: 'Proxima Nova', sans-serif;
     font-weight: 700;
@@ -294,28 +294,30 @@ watch(orderId, resolveOrder)
     justify-content: center;
     padding: 8px 12px;
     border-radius: 8px;
-    border: 2px solid rgba(247, 168, 0, 0.5);
-    background: rgba(247, 168, 0, 0.18);
+    border: none;
     color: #09121a;
     font-size: 1rem;
     font-family: 'Proxima Nova', sans-serif;
     cursor: pointer;
-}
-
-.detail-status:focus-visible {
-    outline: 3px solid rgba(247, 168, 0, 0.8);
-    outline-offset: 2px;
+    transition: all 0.2s ease-in-out;
 }
 
 .detail-status.status-cancelled {
-    background: #DF9B95;
+    background: #ebaaa4;
+    --hover: #e08b83;
 }
 
 .detail-status.status-pending {
-    background: #F7A800;
+    background: #ffd06a;
+    --hover: #f4c057;
 }
 
 .detail-status.status-shipped {
-    background: #8BCF8B;
+    background: #a3e1a3;
+    --hover: #71d171;
+}
+
+.detail-status:hover {
+    background: var(--hover);
 }
 </style>
