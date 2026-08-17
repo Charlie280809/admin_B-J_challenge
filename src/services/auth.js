@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
 
                 window.location.href = '/dashboard';
             } catch (error) {
-                alert('Wrong email or password');
+                this.error = 'Gelieve een geldig e-mailadres en wachtwoord in te voeren.';
                 console.error('Login failed:', error);
             } finally {
                 this.loading = false;
