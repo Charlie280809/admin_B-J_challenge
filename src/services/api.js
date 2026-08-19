@@ -1,39 +1,52 @@
-import axios from 'axios'
-
 const API_URL = 'https://api-b-j-challenge.onrender.com'
 
-export function getOrders(token) {
-    return axios.get(`${API_URL}/api/orders`, {
+const authHeaders = (token) => ({ Authorization: `Bearer ${token}` })
+
+async function request(path, token, options = {}) {
+    const response = await fetch(`${API_URL}${path}`, {
+        ...options,
         headers: {
-            Authorization: `Bearer ${token}`
-        }
+            ...authHeaders(token),
+            ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+            ...(options.headers || {}),
+        },
     })
+
+    const text = await response.text()
+    let data = null
+
+    if (text) {
+        try {
+            data = JSON.parse(text)
+        } catch {
+            data = text
+        }
+    }
+
+    if (!response.ok) {
+        const error = new Error(data?.message || `Request failed with status ${response.status}`)
+        error.response = { data, status: response.status }
+        throw error
+    }
+
+    return { data, status: response.status }
+}
+
+export function getOrders(token) {
+    return request('/api/orders', token)
 }
 
 export function getOrderById(orderId, token) {
-    return axios.get(`${API_URL}/api/orders/${orderId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+    return request(`/api/orders/${orderId}`, token)
 }
 
 export function deleteOrder(orderId, token) {
-    return axios.delete(`${API_URL}/api/orders/${orderId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+    return request(`/api/orders/${orderId}`, token, { method: 'DELETE' })
 }
 
 export function updateOrderStatus(orderId, status, token) {
-    return axios.patch(
-        `${API_URL}/api/orders/${orderId}`,
-        { status },
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    )
+    return request(`/api/orders/${orderId}`, token, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+    })
 }
