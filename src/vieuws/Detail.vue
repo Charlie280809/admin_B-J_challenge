@@ -13,10 +13,12 @@ const STATUS_OPTIONS = ['Te verwerken', 'Verzonden', 'Geannuleerd']
 const order = ref(null)
 const loading = ref(true)
 const error = ref('')
-
 const orderId = computed(() => route.params.id)
-
 const getToken = () => auth.token || localStorage.getItem('token')
+
+const goBack = () => {
+    router.push('/dashboard')
+}
 
 const formatTimestamp = (value) => (value ? new Intl.DateTimeFormat('nl-NL', {
     day: 'numeric',
@@ -25,13 +27,6 @@ const formatTimestamp = (value) => (value ? new Intl.DateTimeFormat('nl-NL', {
     hour: '2-digit',
     minute: '2-digit',
 }).format(new Date(value)) : 'Onbekend')
-
-const toList = (value) => {
-    if (!value) return []
-    if (Array.isArray(value)) return value
-    if (typeof value === 'string') return value.split(',').map((item) => item.trim()).filter(Boolean)
-    return [String(value)]
-}
 
 const formatAddress = (address) => {
     if (!address || typeof address !== 'object') {
@@ -42,6 +37,13 @@ const formatAddress = (address) => {
     const streetAndNumber = parts[0] && parts[1] ? `${parts[0]} ${parts[1]}` : parts[0] || parts[1]
     const postalAndCity = parts[2] && parts[3] ? `${parts[2]} ${parts[3]}` : parts[2] || parts[3]
     return [streetAndNumber, postalAndCity].filter(Boolean).join(', ') || 'Geen adres beschikbaar'
+}
+
+const toList = (value) => {
+    if (!value) return []
+    if (Array.isArray(value)) return value
+    if (typeof value === 'string') return value.split(',').map((item) => item.trim()).filter(Boolean)
+    return [String(value)]
 }
 
 const flavorLabels = {
@@ -119,12 +121,6 @@ const resolveOrder = async () => {
     }
 }
 
-const goBack = () => {
-    router.push('/dashboard')
-}
-
-const formatPrice = (value) => `€ ${value}`
-
 const handleStatusChange = async (event) => {
     const token = getToken()
     const id = order.value?.id
@@ -163,7 +159,6 @@ const handleDelete = async () => {
 }
 
 onMounted(resolveOrder)
-
 watch(orderId, resolveOrder)
 </script>
 
@@ -229,7 +224,7 @@ watch(orderId, resolveOrder)
 
                     <div>
                         <p class="detail-label">Totaalprijs:</p>
-                        <p>{{ formatPrice(order.totalPrice) }}</p>
+                        <p>€ {{ order.totalPrice }}</p>
                     </div>
                 </div>
             </section>
