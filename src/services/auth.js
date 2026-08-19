@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: localStorage.getItem('token') || null,
         loading: false,
+        error: ''
     }),
     actions: {
         async login(email, password) {
