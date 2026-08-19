@@ -2,7 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../services/auth.js'
-import { getOrderById, getOrders, updateOrderStatus } from '../services/api.js'
+import { deleteOrder, getOrderById, getOrders, updateOrderStatus } from '../services/api.js'
+import Trash from '@primeicons/vue/trash';
 
 const route = useRoute()
 const router = useRouter()
@@ -144,6 +145,23 @@ const handleStatusChange = async (event) => {
     }
 }
 
+const handleDelete = async () => {
+    const token = getToken()
+    const id = order.value?.id
+
+    if (!token || !id) {
+        console.error('Kan bestelling niet verwijderen: token of ID ontbreekt')
+        return
+    }
+
+    try {
+        await deleteOrder(id, token)
+        router.push('/dashboard')
+    } catch (err) {
+        console.error('Failed to delete order:', err)
+    }
+}
+
 onMounted(resolveOrder)
 
 watch(orderId, resolveOrder)
@@ -216,6 +234,11 @@ watch(orderId, resolveOrder)
                 </div>
             </section>
         </div>
+        <button class="trashBtn" type="button" title="Verwijder bestelling" @click="handleDelete">
+            <span>
+                <Trash /> Bestelling verwijderen
+            </span>
+        </button>
     </main>
 </template>
 
@@ -255,12 +278,12 @@ watch(orderId, resolveOrder)
     transition: all 0.2s ease-in-out;
 }
 
-.back-button:hover{
+.back-button:hover {
     background: var(--lightblue);
     border-color: var(--darkblue);
 }
 
-.back-button:active{
+.back-button:active {
     transform: translateY(2px);
 }
 
@@ -281,7 +304,7 @@ watch(orderId, resolveOrder)
     gap: 80px;
 }
 
-.detail-grid h2{
+.detail-grid h2 {
     font-family: 'ChunkFive';
 }
 
@@ -297,7 +320,7 @@ watch(orderId, resolveOrder)
     gap: 24px;
 }
 
-.detail-label{
+.detail-label {
     padding: 0 0 8px 0;
     text-decoration: underline;
 }
@@ -353,5 +376,32 @@ watch(orderId, resolveOrder)
 
 .detail-status:hover {
     background: var(--hover);
+}
+
+.trashBtn {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    border: 2px solid #DF9B95;
+    border-radius: 8px;
+    font-family: 'Proxima Nova', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.trashBtn:hover {
+    border: 2px solid var(--red);
+    background-color: #F0CFCC;
+    transition: all 0.2s ease-in-out;
+}
+
+.trashBtn span {
+    display: flex;
+    gap: 6px;
+    color: var(--red);
 }
 </style>
