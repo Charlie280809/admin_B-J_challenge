@@ -10,12 +10,16 @@ export const useAuthStore = defineStore('auth', {
         async login(email, password) {
             this.loading = true;
             try {
-                const res = await axios.post('https://api-b-j-challenge.onrender.com/api/login', {
-                    email,
-                    password
+                const response = await fetch('https://api-b-j-challenge.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
                 })
 
-                this.token = res.data.token;
+                const data = await response.json()
+                if (!response.ok) throw new Error(data?.message || 'Login failed')
+
+                this.token = data.token;
                 localStorage.setItem('token', this.token);
 
                 window.location.href = '/dashboard';
